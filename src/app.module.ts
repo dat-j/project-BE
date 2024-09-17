@@ -1,14 +1,25 @@
 import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { ArticleModule } from './article/article.module';
 import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
-import { NoteController } from './note/note.controller';
-import { NoteService } from './note/note.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { ProfileModule } from './profile/profile.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
-  imports: [UserModule, AuthModule, PrismaModule, ConfigModule.forRoot({isGlobal:true})],
-  controllers: [NoteController],
-  providers: [NoteService],
+  imports: [
+    TypeOrmModule.forRoot(),
+    ArticleModule,
+    UserModule,
+    ProfileModule,
+    TagModule
+  ],
+  controllers: [
+    AppController
+  ],
+  providers: []
 })
-export class AppModule {}
+export class ApplicationModule {
+  constructor(private readonly connection: Connection) {}
+}
