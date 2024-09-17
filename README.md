@@ -1,138 +1,77 @@
-# ![Node/Express/Mongoose Example App](project-logo.png)
+## Description
 
-[![Build Status](https://travis-ci.org/anishkny/node-express-realworld-example-app.svg?branch=master)](https://travis-ci.org/anishkny/node-express-realworld-example-app)
-
-> ### NestJS codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) API spec.
+NestJS JWT authentication service using NestJS, Docker and MySQL. It can be used as a JWT Auth Microservice or can be used as starter repository for an API project.
 
 
-----------
+## Setup
+- **Pre-Requisite**
+  - For dockerized environment we need 
+    - `docker`, 
+    - `docker-compose` installed.
+  - To run API server without Docker we need
+    - `Node.js` (>= 10.13.0) installed,
+    - Dependency manager `yarn` installed,
+    - Nestjs CLI `nest` installed ([follow here](https://docs.nestjs.com/first-steps)) and
+    - MySQL server running
+- **Configuration**
+    - In application root, create `.env` copying form example env file `env.example`.
+    - An example env file contains 
+      - MySQL credentials for the dockerized environment. For non-docker setup, **update MySQL credentials** here.
+      - Password encription salt and JWT secret key values. Change them with some secret values.
+- **Run API**
+    - **For Docker**: Up docker-compose, this will create a docker container with the database with the given name in env. 
+    ``` 
+    $ docker-compose up --build
+    ```
 
-# Getting started
+    - For non-docker run install dependencies and run nodejs API server
+    ```
+    $ yarn
+    $ yarn run start
+    ```
+- **API Documentation**
+    - To get API documentation run following command & browse at [http://127.0.0.1:8089/](http://127.0.0.1:8089/)
+    ```
+    $ yarn run start:api-doc
+    ```
+- **API** 
+  With above steps done, API should be up and running
+    - Browse `API` at [http://localhost:3000](http://localhost:3000)
+    - Browse `Swagger Open API` Doc at [http://localhost:3000/api](http://localhost:3000/api)
+    - Browse (for Docker only) DB `Adminer` at [http://localhost:8080](http://localhost:8080)
 
-## Installation
+## Migration
 
-Clone the repository
+- `TypeORM CLI` used to manage DB migration. ORM configurations are available in the `orm.config.ts` file.
+- Migration auto-synchronization is set to `true` in `development` environment, and `false` in other environments.
+- To create a new empty migration file, use `migration:create` command.
+```
+$ yarn migration:create -n createUsers
+```
+- TypeORM can generate a migration file from changed entity files comparing with the database. To generate a populated migration file from entity files, use `migration:generate` command
+```
+$ yarn migration:generate -n createUsers
+```
+- To run DB migration:
+```
+$ yarn migration:run
+```
+- To rollback migration:
+```
+$ yarn migration:revert
+```
 
-    git clone https://github.com/lujakob/nestjs-realworld-example-app.git
+Read more about TypeORM migration [here][https://typeorm.io/#/migrations]
 
-Switch to the repo folder
+## Running Test
 
-    cd nestjs-realworld-example-app
-    
-Install dependencies
-    
-    npm install
+`yarn test` or `npm run test`
 
-Copy config file and set JsonWebToken secret key
+## Contribution Guidelines
 
-    cp src/config.ts.example src/config.ts
-    
-----------
+Feel free to submit issues or PRs. You can checkout the coding style guide before submitting the PRs. Link is [here](https://github.com/basarat/typescript-book/blob/master/docs/styleguide/styleguide.md).
 
-## Database
+## Stay in touch
 
-The codebase contains examples of two different database abstractions, namely [TypeORM](http://typeorm.io/) and [Prisma](https://www.prisma.io/). 
-    
-The branch `master` implements TypeORM with a mySQL database.
-
-The branch `prisma` implements Prisma with a mySQL database.
-
-----------
-
-##### TypeORM
-
-----------
-
-Create a new mysql database with the name `nestjsrealworld`\
-(or the name you specified in the ormconfig.json)
-
-Copy TypeORM config example file for database settings
-
-    cp ormconfig.json.example
-    
-Set mysql database settings in ormconfig.json
-
-    {
-      "type": "mysql",
-      "host": "localhost",
-      "port": 3306,
-      "username": "your-mysql-username",
-      "password": "your-mysql-password",
-      "database": "nestjsrealworld",
-      "entities": ["src/**/**.entity{.ts,.js}"],
-      "synchronize": true
-    }
-    
-Start local mysql server and create new database 'nestjsrealworld'
-
-On application start, tables for all entities will be created.
-
-----------
-
-##### Prisma
-
-----------
-
-To run the example with Prisma checkout branch `prisma`, remove the node_modules and run `npm install`
-
-Create a new mysql database with the name `nestjsrealworld-prisma` (or the name you specified in `prisma/.env`)
-
-Copy prisma config example file for database settings
-
-    cp prisma/.env.example prisma/.env
-
-Set mysql database settings in prisma/.env
-
-    DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"
-
-To create all tables in the new database make the database migration from the prisma schema defined in prisma/schema.prisma
-
-    npx prisma migrate save --experimental
-    npx prisma migrate up --experimental
-
-Now generate the prisma client from the migrated database with the following command
-
-    npx prisma generate
-
-The database tables are now set up and the prisma client is generated. For more information see the docs:
-
-- https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project-typescript-mysql
-
-
-----------
-
-## NPM scripts
-
-- `npm start` - Start application
-- `npm run start:watch` - Start application in watch mode
-- `npm run test` - run Jest test runner 
-- `npm run start:prod` - Build application
-
-----------
-
-## API Specification
-
-This application adheres to the api specifications set by the [Thinkster](https://github.com/gothinkster) team. This helps mix and match any backend with any other frontend without conflicts.
-
-> [Full API Spec](https://github.com/gothinkster/realworld/tree/master/api)
-
-More information regarding the project can be found here https://github.com/gothinkster/realworld
-
-----------
-
-## Start application
-
-- `npm start`
-- Test api with `http://localhost:3000/api/articles` in your favourite browser
-
-----------
-
-# Authentication
- 
-This applications uses JSON Web Token (JWT) to handle authentication. The token is passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token. Please check the following sources to learn more about JWT.
-
-----------
- 
-# Swagger API docs
-
-This example repo uses the NestJS swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger) - [www.swagger.io](https://swagger.io/)        
+- Author - S M Asad Rahman
+- Twitter - [@asad_rahman](https://twitter.com/asad_rahman)

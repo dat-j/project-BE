@@ -1,22 +1,33 @@
 import { NestFactory } from '@nestjs/core';
-import { ApplicationModule } from './app.module';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+/**
+ * @ignore
+ */
 async function bootstrap() {
-  const appOptions = {cors: true};
-  const app = await NestFactory.create(ApplicationModule, appOptions);
-  app.setGlobalPrefix('api');
+  const app = await NestFactory.create(AppModule);
 
   const options = new DocumentBuilder()
-    .setTitle('NestJS Realworld Example App')
-    .setDescription('The Realworld API description')
+    .setTitle('Nest jwt starte')
+    .setDescription('Jwt project started with nest js')
     .setVersion('1.0')
-    .setBasePath('api')
-    .addBearerAuth()
+    .addBearerAuth('Authorization', 'header')
+    .addTag('jwt')
     .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/docs', app, document);
 
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
+
+  const logger = app.get('NestWinston');
+  app.useLogger(logger);
+
+  /**
+   * Validation pipe transform json body
+   * to dto class & checks validity
+   */
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.listen(3000);
 }
 bootstrap();
