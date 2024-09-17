@@ -1,48 +1,40 @@
-import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from '@nestjs/common';
+import { AppController } from '@/app.controller';
+import { AppService } from '@/app.service';
+import { UsersModule } from '@/modules/users/users.module';
+import { LikesModule } from '@/modules/likes/likes.module';
 
-import { WinstonModule } from 'nest-winston';
-import { loggerConf } from './logger';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-
-import { SharedModule } from './shared/shared.module';
-import { UtilsModule } from './utils/utils.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-
-import { JwtTokenMiddleware, LoggerInterceptor } from './utils';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import * as ormConfig from './orm.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MenuItemOptionsModule } from '@/modules/menu.item.options/menu.item.options.module';
+import { MenuItemsModule } from '@/modules/menu.items/menu.items.module';
+import { MenusModule } from '@/modules/menus/menus.module';
+import { OrderDetailModule } from '@/modules/order.detail/order.detail.module';
+import { OrdersModule } from '@/modules/orders/orders.module';
+import { RestaurantsModule } from '@/modules/restaurants/restaurants.module';
+import { ReviewsModule } from '@/modules/reviews/reviews.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(ormConfig),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
-    }),
-    WinstonModule.forRoot(loggerConf),
-    AuthModule,
-    UserModule,
-    SharedModule,
-    UtilsModule,
+    UsersModule,
+    LikesModule,
+    MenuItemOptionsModule,
+    MenuItemsModule,
+    MenusModule,
+    OrderDetailModule,
+    OrdersModule,
+    RestaurantsModule,
+    ReviewsModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    })
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggerInterceptor,
-    },
-  ],
+  providers: [AppService],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtTokenMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }
-}
+export class AppModule { }
