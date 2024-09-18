@@ -1,8 +1,7 @@
 # compiled output
 /dist
 /node_modules
-/mysqldata
-/production
+/build
 
 # Logs
 logs
@@ -31,20 +30,30 @@ lerna-debug.log*
 
 # IDE - VSCode
 .vscode/*
-.vscode/settings.json
+!.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# env file
+# dotenv environment variable files
 .env
-.env.development
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
-# public
-public/tmp/*
-!public/tmp/.gitkeep
-public/uploads/*
-!public/uploads/.gitkeep
+# temp directory
+.temp
+.tmp
 
-#other
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+mysqldata
 .mysqldata
