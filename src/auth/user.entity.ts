@@ -5,6 +5,12 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  avatarUrl?: string;
+
+  @Column()
+  bio?: string;
+
   @Column({ unique: true })
   email: string;
 
