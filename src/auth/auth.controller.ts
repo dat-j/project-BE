@@ -1,18 +1,25 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Get, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDTO, LoginDTO } from './dto';
+import { SignUpDto } from './dto/signup.dto';
+import { SignInDto } from './dto/signin.dto';
+import { User } from './user.entity';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
-  @Post('signup')
-  signup(@Body() body: AuthDTO) {
-    return this.authService.signup(body);
+
+  @Post('auth/signup')
+  signUp(@Body(ValidationPipe) signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto.email, signUpDto.password, signUpDto.name);
   }
-  @Post('login')
-  login(@Body() body: LoginDTO) {
-    return this.authService.login(body)
+
+  @Post('auth/signin')
+  signIn(@Body(ValidationPipe) signInDto: SignInDto) {
+    return this.authService.signIn(signInDto.email, signInDto.password);
   }
-  @Post('forgot')
-  forgot() {}
+
+  @Get('/profile/:id')
+  getProfile(@Param('id') id: number): Promise<User> {
+    return this.authService.getProfile(id);
+  }
 }
