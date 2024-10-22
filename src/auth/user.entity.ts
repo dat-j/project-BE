@@ -1,14 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Message } from 'src/message/entities/message.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({default:"https://i.pinimg.com/564x/29/b8/d2/29b8d250380266eb04be05fe21ef19a7.jpg"})
   avatarUrl?: string;
 
-  @Column()
+  @Column({default:"Nothing here!"})
   bio?: string;
 
   @Column({ unique: true })
@@ -20,6 +21,9 @@ export class User {
   @Column()
   name: string;
 
+  @Column({default:""})
+  username: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -28,4 +32,7 @@ export class User {
 
   @Column()
   roleId?: number;
+
+  @OneToMany(() => Message, message => message.user)
+  messages: Message[];
 }
