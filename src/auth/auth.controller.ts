@@ -17,9 +17,4 @@ export class AuthController {
   signIn(@Body(ValidationPipe) signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
-
-  @Get('/profile/:id')
-  getProfile(@Param('id') id: number): Promise<User> {
-    return this.authService.getProfile(id);
-  }
 }

@@ -60,17 +60,4 @@ export class AuthService {
     const token = this.jwtService.sign({ userId: user.id });
     return { user, token };
   }
-
-  async getProfile(userId: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ['id', 'name', 'email', 'createdAt', 'avatarUrl'],
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with ID "${userId}" not found`);
-    }
-
-    return user;
-  }
 }

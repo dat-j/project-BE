@@ -4,8 +4,8 @@ services:
     image: mysql:8.0
     container_name: nestjs-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: nestjs_auth_crud
+        MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: bedb
       MYSQL_USER: nestuser
       MYSQL_PASSWORD: nestpassword
     ports:
